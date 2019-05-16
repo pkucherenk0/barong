@@ -175,7 +175,7 @@ describe '/api/v2/auth functionality test' do
           'X-Auth-Signature' => signature
         }
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"errors\":[\"authz.invalid_session\"]}")
+        expect(response.body).to eq("{\"errors\":[\"authz.apikey_not_active\"]}")
         expect(response.headers['Authorization']).to be_nil
       end
 
@@ -190,7 +190,7 @@ describe '/api/v2/auth functionality test' do
         }
 
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"errors\":[\"authz.disabled_2fa\"]}")
+        expect(response.body).to eq("{\"errors\":[\"authz.apikey_not_active\"]}")
         expect(response.headers['Authorization']).to be_nil
       end
     end
