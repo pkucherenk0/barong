@@ -36,27 +36,27 @@ module API::V2
 
           if user.state == 'banned'
             login_error!(reason: 'Your account is banned', error_code: 401,
-                         user: user.id, action: 'login', result: 'failed', error_text: 'banned')
+                         user_uid: user.uid, action: 'login', result: 'failed', error_text: 'banned')
           end
 
           if user.state == 'discarded'
             login_error!(reason: 'Your account is discarded', error_code: 401,
-                         user: user.id, action: 'login', result: 'failed', error_text: 'discarded')
+                         user_uid: user.uid, action: 'login', result: 'failed', error_text: 'discarded')
           end
 
           unless user.active?
             login_error!(reason: 'Your account is not active', error_code: 401,
-                         user: user.id, action: 'login', result: 'failed', error_text: 'not_active')
+                         user_uid: user.uid, action: 'login', result: 'failed', error_text: 'not_active')
           end
 
           unless user.authenticate(declared_params[:password])
-            login_error!(reason: 'Invalid Email or Password', error_code: 401, user: user.id,
+            login_error!(reason: 'Invalid Email or Password', error_code: 401, user_uid: user.uid,
                          action: 'login', result: 'failed', error_text: 'invalid_params')
           end
 
           unless user.otp
             # place for refresh lock logic
-            activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
+            activity_record(user_uid: user.uid, action: 'login', result: 'succeed', topic: 'session')
             session[:uid] = user.uid
 
             present user, with: API::V2::Entities::User
@@ -65,15 +65,15 @@ module API::V2
 
           if declared_params[:otp_code].blank?
             login_error!(reason: 'The account has enabled 2FA but OTP code is missing', error_code: 403,
-                         user: user.id, action: 'login::2fa', result: 'failed', error_text: 'missing_otp')
+                         user_uid: user.uid, action: 'login::2fa', result: 'failed', error_text: 'missing_otp')
           end
 
           unless TOTPService.validate?(user.uid, declared_params[:otp_code])
             login_error!(reason: 'OTP code is invalid', error_code: 403,
-                         user: user.id, action: 'login::2fa', result: 'failed', error_text: 'invalid_otp')
+                         user_uid: user.uid, action: 'login::2fa', result: 'failed', error_text: 'invalid_otp')
           end
 
-          activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
+          activity_record(user_uid: user.uid, action: 'login::2fa', result: 'succeed', topic: 'session')
           session[:uid] = user.uid
 
           present user, with: API::V2::Entities::User
@@ -91,7 +91,7 @@ module API::V2
           user = User.find_by!(uid: session[:uid])
           error!({ errors: ['identity.session.invalid'] }, 401) unless user
 
-          activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
+          activity_record(user_uid: user.uid, action: 'logout', result: 'succeed', topic: 'session')
 
           session.destroy
           status(200)

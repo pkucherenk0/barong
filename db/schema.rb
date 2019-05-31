@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_18_133453) do
+ActiveRecord::Schema.define(version: 2019_05_29_114214) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.string "user_uid", null: false
+    t.string "admin_uid"
     t.string "user_ip", null: false
     t.string "user_agent", null: false
     t.string "topic", null: false
@@ -21,7 +22,8 @@ ActiveRecord::Schema.define(version: 2019_03_18_133453) do
     t.string "result", null: false
     t.text "data"
     t.timestamp "created_at"
-    t.index ["user_id"], name: "index_activities_on_user_id"
+    t.index ["admin_uid"], name: "index_activities_on_admin_uid"
+    t.index ["user_uid"], name: "index_activities_on_user_uid"
   end
 
   create_table "apikeys", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -71,8 +73,10 @@ ActiveRecord::Schema.define(version: 2019_03_18_133453) do
     t.string "role", null: false
     t.string "verb", null: false
     t.string "path", null: false
+    t.string "topic"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["topic"], name: "index_permissions_on_topic"
   end
 
   create_table "phones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

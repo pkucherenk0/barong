@@ -11,7 +11,7 @@ class User < ApplicationRecord
   has_many  :documents,  dependent: :destroy
   has_many  :labels,     dependent: :destroy
   has_many  :api_keys,   dependent: :destroy, class_name: 'APIKey'
-  has_many  :activities, dependent: :destroy
+  has_many  :activities, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
 
   validate :role_exists
   validates :email,       email: true, presence: true, uniqueness: true
