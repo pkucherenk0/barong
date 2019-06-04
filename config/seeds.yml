@@ -27,6 +27,7 @@ permissions:
  - { role: superadmin, verb: post, path: api/v2, action: accept }
  - { role: superadmin, verb: put, path: api/v2, action: accept }
  - { role: superadmin, verb: delete, path: api/v2, action: accept }
+ - { role: superadmin, verb: get, path: assets, action: accept }
 
 # ADMIN
 # admin has nearly full access to barong and peatio api, except managing permissions
